@@ -1,0 +1,53 @@
+# Copyright 2017, Oracle Corporation and/or affiliates.  All rights reserved.
+
+# This is a sample that demonstrates how to use the Wercker Gradle step.
+#
+
+box:
+  id: store/oracle/serverjre
+  username: $DOCKER_USERNAME
+  password: $DOCKER_PASSWORD
+  tag: 8
+
+# this pipeline does not really do anything, it just acts as a fan-out point to run all of test/demo pipelines
+build:
+  steps:
+    - script:
+      name: Build
+      code: |
+        echo "Hello Gradle!"
+        echo "Choose the pipeline you want to run, e.g. 'test-timeout' and run it like this:"
+        echo "wercker build --pipeline=test-timeout"
+
+regular-test:
+  steps:
+    - script:
+      name: Install pre-reqs
+      code: |
+        yum -y install tar gzip
+    - wercker/step-gradle@0.1.2 "https://github.com/markxnelson/step-gradle/archive/master.tar.gz":
+      goals: clean compile
+    - wercker/step-maven@0.1.2:
+      goals: install
+    # you should push your image now :)
+    #  - internal/docker-push:
+    #    repository: quay.io/myuser/myapp
+    #    tag: 1.0.0
+
+test-with-wercker-cache:
+  steps:
+    - script:
+      name: Install pre-reqs
+      code: |
+        yum -y install tar gzip
+    - wercker/step-maven@0.1.2 "https://github.com/markxnelson/step-gradle/archive/master.tar.gz":
+      goals: clean compile
+      cache_repo: true
+    - wercker/step-maven@0.1.2:
+      goals: install
+      cache_repo: true
+    # you should push your image now :)
+    #  - internal/docker-push:
+    #    repository: quay.io/myuser/myapp
+    #    tag: 1.0.0
+
