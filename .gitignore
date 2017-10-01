@@ -1,3 +1,5 @@
 .idea
 .wercker
 target
+.gradle
+build

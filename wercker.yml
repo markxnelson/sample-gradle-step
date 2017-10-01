@@ -19,35 +19,20 @@ build:
         echo "Choose the pipeline you want to run, e.g. 'test-timeout' and run it like this:"
         echo "wercker build --pipeline=test-timeout"
 
-regular-test:
-  steps:
-    - script:
-      name: Install pre-reqs
-      code: |
-        yum -y install tar gzip
-    - wercker/step-gradle@0.1.2 "https://github.com/markxnelson/step-gradle/archive/master.tar.gz":
-      goals: clean compile
-    - wercker/step-maven@0.1.2:
-      goals: install
-    # you should push your image now :)
-    #  - internal/docker-push:
-    #    repository: quay.io/myuser/myapp
-    #    tag: 1.0.0
-
 test-with-wercker-cache:
   steps:
     - script:
       name: Install pre-reqs
       code: |
-        yum -y install tar gzip
-    - wercker/step-maven@0.1.2 "https://github.com/markxnelson/step-gradle/archive/master.tar.gz":
-      goals: clean compile
-      cache_repo: true
-    - wercker/step-maven@0.1.2:
-      goals: install
-      cache_repo: true
+        yum -y install tar unzip
+    - java/gradle@0.1.12 "https://github.com/markxnelson/step-gradle/archive/master.tar.gz":
+      task: build
+      cache_project_cache: true
     # you should push your image now :)
     #  - internal/docker-push:
     #    repository: quay.io/myuser/myapp
     #    tag: 1.0.0
 
+dev:
+  steps:
+    - internal/shell
