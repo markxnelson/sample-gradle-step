@@ -25,14 +25,10 @@ test-with-wercker-cache:
       name: Install pre-reqs
       code: |
         yum -y install tar unzip
-    - java/gradle@0.1.12 "https://github.com/markxnelson/step-gradle/archive/master.tar.gz":
+    - java/gradle:
       task: build
       cache_project_cache: true
     # you should push your image now :)
     #  - internal/docker-push:
     #    repository: quay.io/myuser/myapp
     #    tag: 1.0.0
-
-dev:
-  steps:
-    - internal/shell
